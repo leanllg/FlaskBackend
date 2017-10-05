@@ -28,11 +28,11 @@ class Case(db.Model):
         self.latitude = latitude
         self.description = description
 
-    def save():
+    def save(self):
         db.session.add(self)
         db.session.commit()
         return self
 
-    def update():
+    def update(self):
         db.session.commit()
         return self

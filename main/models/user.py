@@ -30,3 +30,13 @@ class User(db.Model):
     def update(self):
         db.session.commit()
         return self
+
+    def to_json(self):
+        json_user = {
+            'name': self.name,
+            'phone': self.phone,
+            'qq': self.qq,
+            'avatar': self.avatar,
+            'love_level': self.love_level
+        }
+        return json_user

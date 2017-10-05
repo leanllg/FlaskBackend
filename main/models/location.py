@@ -12,11 +12,19 @@ class Location(db.Model):
         self.latitude = latitude
         self.detail = detail
 
-    def save():
+    def save(self):
         db.session.add(self)
         db.session.commit()
         return self
 
-    def update():
+    def update(self):
         db.session.commit()
         return self
+
+    def to_json(self):
+        json_location = {
+            'longtitude': self.longtitude,
+            'latitude': self.latitude,
+            'detail': self.detail
+        }
+        return json_location
