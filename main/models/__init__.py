@@ -10,3 +10,4 @@ from main.models import location
 from main.models import user
 
 def set_user_info():
+    
