@@ -1,9 +1,12 @@
 import json
 import datetime
 from flask import Blueprint, session, request, g, jsonify, abort
-from flask_jwt_extended import JWTManager, jwt_refresh_token_required, jwt_required, create_access_token, create_refresh_token
+from flask_jwt_extended import JWTManager, jwt_refresh_token_required, jwt_required, create_access_token, create_refresh_token, get_raw_jwt
 from main.models.user import User
 from main.utils import get_salt_pwd
+import bcrypt
+import main.models import revoke_token
+from main.models.TokenBlacklist import TokenBlacklist
 
 mod = Blueprint('user', __name__, url_prefix='/api/user')
 
@@ -16,18 +19,51 @@ def signup(name):
     dic = json.loads(_json)
     password = dic['password']
     pwd = get_salt_pwd(password)
-    dic['avatar'] = '/home/default/default.jpg'
+    if dic['avatar'] == None:
+        dic['avatar'] = '/home/default/default.jpg'
     user = User(name=dic['name'], password=pwd, phone=dic['phone'],\
     qq=dic['qq'], avatar=dic['avatar'])
     user.save()
+    return jsonify({'status': 1}), 200
+
+@mod.route('/<name>', method=['GET'])
+def login(name):
+    user_info = User.query.filter_by(name=name).first()
+    username = request.json.get('name', None)
+    password = request.json.get('password', None)
+    if username != user_info['name'] or not bcrypt.checkpw(password, user_info['password']):
+        return jsonify({'status': 0, 'error': 'username or password wrong'}), 404
+    dic = dict.copy(user_info)
+    refresh_token = create_refresh_token(identity=dic, expires_delta=datetime.timedelta(hours=10))
+    access_token = create_access_token(identity=dic, expires_delta=datetime.timedelta(days=180))
+    add_token_to_database(access_token, app.config['JWT_IDENTITY_CLAIM'])
+    add_token_to_database(refresh_token, app.config['JWT_IDENTITY_CLAIM'])
     ret = {
-        'access_token': create_access_token(identity=dic['name'], expires_delta=datetime.timedelta(days=180)),
-        'refresh_token': create_refresh_token(identity=dic['name'] + dic['phone'], expires_delta=datetime.timedelta(hours=10))
+        'status': 1,
+        'access_token': access_token,
+        'refresh_token': refresh_token
     }
     return jsonify(ret), 200
 
-@mode.route('/')
+@mod.route('/', method=['DELETE'])
+@jwt_refresh_token_required
+def logout():
+    current_user = get_jwt_identity()
+    name = current_user['name']
+    token = get_raw_jwt()
+    try:
+        revoke_token(token['jti'], current_user['name']);
+        return jsonify{'status': 1}, 201
+    except NoResultFound:
+        return jsonify{'status': 0}, 404
 
-@mod.route('/<name>', method=['GET'])
+
+@mod.route('/profile', mothod=['POST'])
 @jwt_required
-def 
+def set_profile(name):
+    current_user = get_jwt_identity()
+    user_info = User.query.filter_by(name=current_user['name']).first()
+    if user_info is None:
+        return jsonify({'status': 0, 'error': 'no such user'}), 404
+
+@mode.route('/profile', method=['GET'])

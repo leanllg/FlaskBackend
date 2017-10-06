@@ -28,9 +28,9 @@ def get_user_tokens(user_identity):
     return TokenBlacklist.query.filter_by(user_identity=user_identity).all()
 
 
-def revoke_token(token_id, user):
+def revoke_token(jti, user):
     try:
-        token = TokenBlacklist.query.filter_by(id=token_id, user_identity=user).one()
+        token = TokenBlacklist.query.filter_by(jti=jti, user_identity=user).one()
         token.revoked = True
         db.session.commit()
     except NoResultFound:
