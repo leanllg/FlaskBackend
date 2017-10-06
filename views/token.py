@@ -3,7 +3,7 @@ from flask import Blueprint
 
 token = Blueprint('token', __name__, url_prefix='/api/token')
 
-@token.route('/refresh', method=['GET'])
+@token.route('/refresh', methods=['GET'])
 @jwt_refresh_token_required
 def refresh_token():
     current_user = get_jwt_identity()

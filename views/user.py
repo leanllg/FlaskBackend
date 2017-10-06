@@ -45,7 +45,7 @@ def login(name):
     }
     return jsonify(ret), 200
 
-@mod.route('/', method=['DELETE'])
+@mod.route('/', methods=['DELETE'])
 @jwt_refresh_token_required
 def logout():
     current_user = get_jwt_identity()
@@ -58,7 +58,7 @@ def logout():
         return jsonify{'status': 0}, 404
 
 
-@mod.route('/profile', mothod=['POST'])
+@mod.route('/profile', mothods=['POST'])
 @jwt_required
 def set_profile(name):
     current_user = get_jwt_identity()
@@ -66,4 +66,4 @@ def set_profile(name):
     if user_info is None:
         return jsonify({'status': 0, 'error': 'no such user'}), 404
 
-@mode.route('/profile', method=['GET'])
+@mode.route('/profile', methods=['GET'])
