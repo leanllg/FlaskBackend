@@ -25,7 +25,6 @@ def get_case():
         case_list.append(dic)
     return jsonify(case_list)
 
-
 @case.route('/', methods=['POST'])
 @jwt_required
 def put_case():

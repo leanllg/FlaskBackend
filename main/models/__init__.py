@@ -52,5 +52,3 @@ def prune_database():
     for token in expired:
         db.session.delete(token)
     db.session.commit()
-
-def set_user_info():

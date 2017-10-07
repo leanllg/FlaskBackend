@@ -90,5 +90,5 @@ def love_level():
     user_info = User.query.filter_by(name=current_user['name']).one()
     if request.json:
         user_info.love_level = request.json['love_level']
-        return jsonify('status': 1)
-    return jsonify('status': 0, 'error': 'not json')
+        return jsonify('status': 1), 200
+    return jsonify('status': 0, 'error': 'not json'), 404
