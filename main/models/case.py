@@ -36,3 +36,15 @@ class Case(db.Model):
     def update(self):
         db.session.commit()
         return self
+
+    def to_json(self):
+        return {
+            'is_borrow': self.is_borrow,
+            'status': self.status,
+            'sex': self.sex,
+            'time': self.time,
+            'duration': self.duration,
+            'longtitude': self.longtitude,
+            'latitude': self.latitude,
+            'description': self.description
+            }
