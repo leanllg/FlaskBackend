@@ -6,3 +6,14 @@ jwt = JWTManager(app)
 
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
+
+from main.views.cases import case
+from main.views.img import img
+from main.views.location import location
+from main.views.token import token
+from main.view.user import mod
+app.register_blueprint(case)
+app.register_blueprint(img)
+app.register_blueprint(location)
+app.register_blueprint(token)
+app.register_blueprint(mod)

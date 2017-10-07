@@ -39,6 +39,7 @@ class Case(db.Model):
 
     def to_json(self):
         return {
+            'id': self.id,
             'is_borrow': self.is_borrow,
             'status': self.status,
             'sex': self.sex,
