@@ -60,10 +60,35 @@ def logout():
 
 @mod.route('/profile', mothods=['POST'])
 @jwt_required
-def set_profile(name):
+def set_profile():
     current_user = get_jwt_identity()
     user_info = User.query.filter_by(name=current_user['name']).first()
     if user_info is None:
         return jsonify({'status': 0, 'error': 'no such user'}), 404
+    name = request.json['name']
+    qq = request.json['qq']
+    phone = request.json['phone']
+    if not name:
+        user_info.name = name
+    if not qq:
+        user_info.qq = qq
+    if not phone:
+        user_info.phone = phone
+    return jsonify(user_info.to_json()), 200
 
 @mode.route('/profile', methods=['GET'])
+    current_user = get_jwt_identity()
+    user_info = User.query.filter_by(name=current_user['name']).first()
+    if user_info is None:
+        return jsonify({'status': 0, 'error': 'no such user'}), 404
+    return jsonify(user_info.to_json()), 200
+
+@mode.route('/love_level', methods=['POST'])
+@jwt_required
+def love_level():
+    current_user = get_jwt_identity()
+    user_info = User.query.filter_by(name=current_user['name']).one()
+    if request.json:
+        user_info.love_level = request.json['love_level']
+        return jsonify('status': 1)
+    return jsonify('status': 0, 'error': 'not json')
