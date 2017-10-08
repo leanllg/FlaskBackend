@@ -27,7 +27,7 @@ def upload_img():
         avatar = os.path.join(path, filename)
         im.save(avatar)
         return jsonify({'status': 1, 'avatar': avatar}), 200
-    return jsonify({'status': 0}), 404
+    return jsonify({'status': 0, 'error': 'not invlid file'}), 404
 
 @img.route('/', methods=['GET'])
 @jwt_required

@@ -45,6 +45,7 @@ def put_case():
         duration=duration, longtitude=longtitude, latitude=latitude, description=description, sex=sex)
         case.save()
         return jsonify({'status': 1}), 200
+    return jsonify({'status': 0, 'error': 'required json'})
 
 @case.route('/reception', methods=['POST'])
 @jwt_required

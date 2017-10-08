@@ -94,6 +94,8 @@ def love_level():
     current_user = get_jwt_identity()
     user_info = User.query.filter_by(name=current_user['name']).one()
     if request.json:
+		if not request.json['love_level'] || request.json['love_level'] < 0
+			return jsonify({'status': 0, 'error': 'love_level invalid'}), 402
         user_info.love_level = request.json['love_level']
         return jsonify({'status': 1}), 200
     return jsonify({'status': 0, 'error': 'not json'}), 404

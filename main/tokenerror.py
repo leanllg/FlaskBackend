@@ -11,7 +11,7 @@ def expired_token():
 def invalid_token():
     return jsonify({
         'status': 0,
-        'error': 'token expired'
+        'error': 'token invalid'
     }), 401
 
 @jwt.revoked_token_loader
