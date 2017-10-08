@@ -15,20 +15,22 @@ def signup(name):
     user_info = User.query.filter_by(name=name).first()
     if user_info is not None:
         return jsonify({'status': 0, 'error': 'user exists'})
-    _json = request.get_data()
-    dic = json.loads(_json)
-    password = dic['password']
+    password = request.json['password']
     pwd = get_salt_pwd(password)
-    if dic['avatar'] == None:
-        dic['avatar'] = '/home/default/default.jpg'
-    user = User(name=dic['name'], password=pwd, phone=dic['phone'],\
-    qq=dic['qq'], avatar=dic['avatar'])
+    if request.json['avatar'] == None:
+        avatar = '/home/default/default.jpg'
+	else:
+		avatar = request.json['avatar']
+    user = User(name=name, password=pwd, phone=request.json['phone'],\
+    qq=request.json['qq'], avatar=avatar, love_level=0)
     user.save()
     return jsonify({'status': 1}), 200
 
 @mod.route('/<name>', method=['GET'])
 def login(name):
     user_info = User.query.filter_by(name=name).first()
+	if not request.json:
+		return jsonify({'status': 0}), 404
     username = request.json.get('name', None)
     password = request.json.get('password', None)
     if username != user_info['name'] or not bcrypt.checkpw(password, user_info['password']):

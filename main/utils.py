@@ -4,7 +4,7 @@ import base64
 
 def get_salt_pwd(password):
     h = SHA512.new()
-    h.update(password + salt2)
+    h.update(encode(password, 'utf-8'))
     pwd = bcrypt.hashpw(
         base64.b64encode(h.digest()),
         bcrypt.gensalt()

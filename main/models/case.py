@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Case(db.Model):
     __tablename__  = 'cases'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     other_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     is_borrow = db.Column(db.Boolean, nullable=False)
