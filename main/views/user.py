@@ -12,12 +12,14 @@ mod = Blueprint('user', __name__, url_prefix='/api/user')
 
 @mod.route('/<name>', methods=['POST'])
 def signup(name):
+	if not request.json:
+		return jsonify({'status': 0}), 404
     user_info = User.query.filter_by(name=name).first()
     if user_info is not None:
         return jsonify({'status': 0, 'error': 'user exists'})
     password = request.json['password']
     pwd = get_salt_pwd(password)
-    if request.json['avatar'] == None:
+    if not request.json['avatar']:
         avatar = '/home/default/default.jpg'
 	else:
 		avatar = request.json['avatar']
