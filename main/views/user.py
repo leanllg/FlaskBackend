@@ -5,12 +5,12 @@ from flask_jwt_extended import JWTManager, jwt_refresh_token_required, jwt_requi
 from main.models.user import User
 from main.utils import get_salt_pwd
 import bcrypt
-import main.models import revoke_token
+from main.models import revoke_token
 from main.models.TokenBlacklist import TokenBlacklist
 
 mod = Blueprint('user', __name__, url_prefix='/api/user')
 
-@mod.route('/<name>', method=['POST'])
+@mod.route('/<name>', methods=['POST'])
 def signup(name):
     user_info = User.query.filter_by(name=name).first()
     if user_info is not None:
@@ -53,12 +53,12 @@ def logout():
     token = get_raw_jwt()
     try:
         revoke_token(token['jti'], current_user['name']);
-        return jsonify{'status': 1}, 201
+        return jsonify({'status': 1}), 201
     except NoResultFound:
-        return jsonify{'status': 0}, 404
+        return jsonify({'status': 0}), 404
 
 
-@mod.route('/profile', mothods=['POST'])
+@mod.route('/profile', methods=['POST'])
 @jwt_required
 def set_profile():
     current_user = get_jwt_identity()
@@ -76,19 +76,20 @@ def set_profile():
         user_info.phone = phone
     return jsonify(user_info.to_json()), 200
 
-@mode.route('/profile', methods=['GET'])
+@mod.route('/profile', methods=['GET'])
+def get_profile():
     current_user = get_jwt_identity()
     user_info = User.query.filter_by(name=current_user['name']).first()
     if user_info is None:
         return jsonify({'status': 0, 'error': 'no such user'}), 404
     return jsonify(user_info.to_json()), 200
 
-@mode.route('/love_level', methods=['POST'])
+@mod.route('/love_level', methods=['POST'])
 @jwt_required
 def love_level():
     current_user = get_jwt_identity()
     user_info = User.query.filter_by(name=current_user['name']).one()
     if request.json:
         user_info.love_level = request.json['love_level']
-        return jsonify('status': 1), 200
-    return jsonify('status': 0, 'error': 'not json'), 404
+        return jsonify({'status': 1}), 200
+    return jsonify({'status': 0, 'error': 'not json'}), 404

@@ -1,8 +1,8 @@
-from flask.ext.sqlalchemy import SQLALchemy
+from flask_sqlalchemy import SQLAlchemy
 from main import app
 from datetime import datetime
 
-db = SQLALchemy(app)
+db = SQLAlchemy(app)
 
 from main.models import case
 from main.models import location

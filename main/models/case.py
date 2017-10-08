@@ -1,5 +1,5 @@
 from main.models import db
-import datetime
+from datetime import datetime
 
 class Case(db.Model):
     __tablename__  = 'cases'
@@ -9,7 +9,7 @@ class Case(db.Model):
     is_borrow = db.Column(db.Boolean, nullable=False)
     status = db.Column(db.Integer, nullable=False)
     sex = db.Column(db.Integer, nullable=False)
-    time = db.Column(db.DateTime, default=datetime.utcnow)
+    time = db.Column(db.Datetime(timezone=True), default=datetime.now().timestamp())
     duration = db.Column(db.Interval, default=0)
     longtitude = db.Column(db.Numeric(10, 6), nullable=False)
     latitude = db.Column(db.Numeric(10, 6), nullable=False)

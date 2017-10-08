@@ -1,7 +1,7 @@
 from main.models import db
 
 class Location(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True, nullable=False, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
     longtitude = db.Column(db.Numeric(10, 6), nullable=False)
     latitude = db.Column(db.Numeric(10, 6), nullable=False)
     detail = db.Column(db.Text(), nullable=True)

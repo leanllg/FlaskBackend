@@ -11,7 +11,7 @@ from main.views.cases import case
 from main.views.img import img
 from main.views.location import location
 from main.views.token import token
-from main.view.user import mod
+from main.views.user import mod
 app.register_blueprint(case)
 app.register_blueprint(img)
 app.register_blueprint(location)
