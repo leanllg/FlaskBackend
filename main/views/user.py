@@ -28,7 +28,7 @@ def signup(name):
     user.save()
     return jsonify({'status': 1}), 200
 
-@mod.route('/<name>', method=['GET'])
+@mod.route('/<name>', methods=['GET'])
 def login(name):
 	user_info = User.query.filter_by(name=name).first()
 	if not request.json:
