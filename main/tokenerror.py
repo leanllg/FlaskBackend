@@ -1,4 +1,5 @@
 from main import jwt
+from flask import jsonify
 
 @jwt.expired_token_loader
 def expired_token():

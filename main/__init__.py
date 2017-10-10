@@ -13,19 +13,15 @@ from main.views.user import mod
 
 from main.tokenerror import expired_token, invalid_token, revoked_token
 
-def config_app():
+app.config.from_object('config')
+app.config.from_pyfile('config.py')
 
-    app.config.from_object('config')
-    app.config.from_pyfile('config.py')
+app.register_blueprint(case)
+app.register_blueprint(img)
+app.register_blueprint(location)
+app.register_blueprint(token)
+app.register_blueprint(mod)
 
-    app.register_blueprint(case)
-    app.register_blueprint(img)
-    app.register_blueprint(location)
-    app.register_blueprint(token)
-    app.register_blueprint(mod)
-
-    expired_token()
-    invalid_token()
-    revoke_token()
-
-    return app
+expired_token()
+invalid_token()
+revoke_token()
