@@ -21,7 +21,3 @@ app.register_blueprint(img)
 app.register_blueprint(location)
 app.register_blueprint(token)
 app.register_blueprint(mod)
-
-expired_token()
-invalid_token()
-revoke_token()

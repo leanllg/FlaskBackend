@@ -9,7 +9,6 @@ class User(db.Model):
     qq = db.Column(db.Text(), nullable=False)
     avatar = db.Column(db.Text(), nullable=False)
     love_level = db.Column(db.Numeric(), nullable=True)
-    location = db.relationship('Location', backref='User', uselist=False)
 
     def __init__(self, password, name, phone, qq, avatar, love_level):
         self.password = password
