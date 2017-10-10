@@ -3,6 +3,8 @@ from flask_jwt_extended import JWTManager
 
 app = Flask(__name__, instance_relative_config=True)
 
+jwt = JWTManager(app)
+
 from main.views.cases import case
 from main.views.img import img
 from main.views.location import location
@@ -11,8 +13,7 @@ from main.views.user import mod
 
 from main.tokenerror import expired_token, invalid_token, revoked_token
 
-def config_app(app):
-    jwt = JWTManager(app)
+def config_app():
 
     app.config.from_object('config')
     app.config.from_pyfile('config.py')

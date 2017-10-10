@@ -17,10 +17,10 @@ def signup(name):
     user_info = User.query.filter_by(name=name).first()
     if user_info is not None:
         return jsonify({'status': 0, 'error': 'user exists'})
-    password = request.json['password']
-    pwd = get_salt_pwd(password)
+	password = request.json['password']
+	pwd = get_salt_pwd(password)
     if not request.json['avatar']:
-        avatar = '/home/default/default.jpg'
+		avatar = '/home/default/default.jpg'
 	else:
 		avatar = request.json['avatar']
     user = User(name=name, password=pwd, phone=request.json['phone'],\
@@ -30,10 +30,10 @@ def signup(name):
 
 @mod.route('/<name>', method=['GET'])
 def login(name):
-    user_info = User.query.filter_by(name=name).first()
+	user_info = User.query.filter_by(name=name).first()
 	if not request.json:
 		return jsonify({'status': 0}), 404
-    username = request.json.get('name', None)
+	username = request.json.get('name', None)
     password = request.json.get('password', None)
     if username != user_info['name'] or not bcrypt.checkpw(password, user_info['password']):
         return jsonify({'status': 0, 'error': 'username or password wrong'}), 404
@@ -94,7 +94,7 @@ def love_level():
     current_user = get_jwt_identity()
     user_info = User.query.filter_by(name=current_user['name']).one()
     if request.json:
-		if not request.json['love_level'] || request.json['love_level'] < 0
+		if not request.json['love_level'] or request.json['love_level'] < 0:
 			return jsonify({'status': 0, 'error': 'love_level invalid'}), 402
         user_info.love_level = request.json['love_level']
         return jsonify({'status': 1}), 200
