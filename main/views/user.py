@@ -19,7 +19,7 @@ def signup(name):
         return jsonify({'status': 0, 'error': 'user exists'})
 	password = request.json['password']
 	pwd = get_salt_pwd(password)
-    if not request.json['avatar']:
+    if not request.json.get('avatar', None):
 		avatar = '/home/default/default.jpg'
 	else:
 		avatar = request.json['avatar']
