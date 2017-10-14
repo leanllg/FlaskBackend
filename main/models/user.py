@@ -36,6 +36,6 @@ class User(db.Model):
             'phone': self.phone,
             'qq': self.qq,
             'avatar': self.avatar,
-            'love_level': self.love_level
+            'love_level': str(self.love_level)
         }
         return json_user

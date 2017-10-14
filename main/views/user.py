@@ -1,6 +1,6 @@
 import datetime
 import bcrypt
-from flask import Blueprint, request,jsonify
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_refresh_token_required, jwt_required, create_access_token, create_refresh_token, get_raw_jwt
 
 from main.models.user import User
@@ -24,7 +24,7 @@ def signup(name):
             avatar = '/home/default/default.jpg'
         else:
             avatar = request.json['avatar']
-        user = User(name=name, password=pwd, phone=request.json['phone'],\
+        user = User(name=name, password=pwd.decode(), phone=request.json['phone'],\
         qq=request.json['qq'], avatar=avatar, love_level=0)
         user.save()
         return jsonify({'status': 1}), 200
@@ -39,9 +39,9 @@ def login():
     username = request.json.get('name', None)
     password = request.json.get('password', None)
     user_info = User.query.filter_by(name=username).first()
-    if username != user_info.name or not bcrypt.checkpw(hash_pwd(password), user_info.password):
+    if username != user_info.name or not bcrypt.checkpw(hash_pwd(password), user_info.password.encode()):
         return jsonify({'status': 0, 'error': 'username or password wrong'}), 404
-    dic = dict.copy(user_info)
+    dic = user_info.to_json()
     refresh_token = create_refresh_token(identity=dic, expires_delta=datetime.timedelta(hours=10))
     access_token = create_access_token(identity=dic, expires_delta=datetime.timedelta(days=180))
     add_token_to_database(access_token, app.config['JWT_IDENTITY_CLAIM'])
