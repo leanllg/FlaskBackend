@@ -30,16 +30,16 @@ def signup(name):
         return jsonify({'status': 1}), 200
     except:
         print('parama error\n')
-        return jsonify({'status': 0, 'error': 'parama error'})
+        return jsonify({'status': 0, 'error': 'parama error'}), 404
 
-@mod.route('/<name>', methods=['GET'])
-def login(name):
-    user_info = User.query.filter_by(name=name).first()
+@mod.route('/', methods=['POST'])
+def login():
     if not request.json:
         return jsonify({'status': 0}), 404
     username = request.json.get('name', None)
     password = request.json.get('password', None)
-    if username != user_info['name'] or not bcrypt.checkpw(password, user_info['password']):
+    user_info = User.query.filter_by(name=username).first()
+    if username != user_info.name or not bcrypt.checkpw(password, user_info.password.encode('utf-8')):
         return jsonify({'status': 0, 'error': 'username or password wrong'}), 404
     dic = dict.copy(user_info)
     refresh_token = create_refresh_token(identity=dic, expires_delta=datetime.timedelta(hours=10))
