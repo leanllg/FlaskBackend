@@ -4,12 +4,11 @@ class TokenBlacklist(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     jti = db.Column(db.String(36), nullable=False)
     token_type = db.Column(db.String(10), nullable=False)
-    user_identity = db.Column(db.String(50), nullable=False)
+    user_identity = db.Column(db.PickleType, nullable=False)
     revoked = db.Column(db.Boolean, nullable=False)
     expires = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, id, jti, token_type, user_identity, revoked, expires):
-        self.id = id
+    def __init__(self, jti, token_type, user_identity, revoked, expires):
         self.jti = jti
         self.token_type = token_type
         self.user_identity = user_identity
