@@ -13,14 +13,14 @@ from main.models.TokenBlacklist import TokenBlacklist
 def _timestamp_to_datetime(timestamp):
     return datetime.fromtimestamp(timestamp)
 
-def add_token_to_database(encoded_token):
+def add_token_to_database(encoded_token, identity_claim):
     decoded_token = decode_token(encoded_token)
     db_token = TokenBlacklist(
         jti=decoded_token['jti'],
         token_type=decoded_token['type'],
-        user_identity=decoded_token['user_identity'],
-        expires=decoded_token['expires'],
-        revoked=decoded_token['revoked']
+        user_identity=decoded_token[identity_claim],
+        expires=_timestamp_to_datetime(decoded_token['expires']),
+        revoked=False
     )
     db_token.save()
 

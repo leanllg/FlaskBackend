@@ -1,5 +1,6 @@
 from flask_jwt_extended import create_access_token, jwt_refresh_token_required, get_jwt_identity
 from flask import Blueprint, jsonify
+from main.models import add_token_to_database
 
 token = Blueprint('token', __name__, url_prefix='/api/token')
 
