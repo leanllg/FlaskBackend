@@ -1,10 +1,10 @@
-import json
 import datetime
-from flask import Blueprint, session, request, g, jsonify, abort
-from flask_jwt_extended import JWTManager, jwt_refresh_token_required, jwt_required, create_access_token, create_refresh_token, get_raw_jwt
-from main.models.user import User
-from main.utils import get_salt_pwd
 import bcrypt
+from flask import Blueprint, request,jsonify
+from flask_jwt_extended import jwt_refresh_token_required, jwt_required, create_access_token, create_refresh_token, get_raw_jwt
+
+from main.models.user import User
+from main.utils import get_salt_pwd, hash_pwd
 from main.models import revoke_token
 from main.models.TokenBlacklist import TokenBlacklist
 
@@ -39,7 +39,7 @@ def login():
     username = request.json.get('name', None)
     password = request.json.get('password', None)
     user_info = User.query.filter_by(name=username).first()
-    if username != user_info.name or not bcrypt.checkpw(password, user_info.password.encode('utf-8')):
+    if username != user_info.name or not bcrypt.checkpw(hash_pwd(password), user_info.password):
         return jsonify({'status': 0, 'error': 'username or password wrong'}), 404
     dic = dict.copy(user_info)
     refresh_token = create_refresh_token(identity=dic, expires_delta=datetime.timedelta(hours=10))

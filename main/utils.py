@@ -10,3 +10,8 @@ def get_salt_pwd(password):
         bcrypt.gensalt()
     )
     return pwd
+
+def hash_pwd(password):
+    h = SHA512.new()
+    h.update(password.encode('utf-8'))
+    return base64.b64encode(h.digest())
