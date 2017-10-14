@@ -2,7 +2,6 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 
 app = Flask(__name__, instance_relative_config=True)
-
 jwt = JWTManager(app)
 
 from main.views.cases import case
@@ -12,12 +11,23 @@ from main.views.token import token
 from main.views.user import mod
 
 from main.tokenerror import expired_token, invalid_token, revoked_token
+from main.models import db
 
-app.config.from_object('config')
-app.config.from_pyfile('config.py')
+def create_app():
+    db.init_app(app)
+    jwt.init_app(app)
 
-app.register_blueprint(case)
-app.register_blueprint(img)
-app.register_blueprint(location)
-app.register_blueprint(token)
-app.register_blueprint(mod)
+    app.config.from_object('config')
+    app.config.from_pyfile('config.py')
+
+    @app.before_first_request
+    def setup_sqlalchemy():
+        db.create_all()
+
+    app.register_blueprint(case)
+    app.register_blueprint(img)
+    app.register_blueprint(location)
+    app.register_blueprint(token)
+    app.register_blueprint(mod)
+
+    return app

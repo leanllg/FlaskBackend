@@ -9,15 +9,16 @@ from main.models import location
 from main.models import user
 from main.models import TokenBlacklist
 from flask_jwt_extended import decode_token
+from main.models.TokenBlacklist import TokenBlacklist
 
 def _timestamp_to_datetime(timestamp):
     return datetime.fromtimestamp(timestamp)
 
-def add_token_to_database(encoded_token, identity):
+def add_token_to_database(encoded_token):
     decoded_token = decode_token(encoded_token)
     db_token = TokenBlacklist(
         jti=decoded_token['jti'],
-        token_type=decoded_token['token_type'],
+        token_type=decoded_token['type'],
         user_identity=decoded_token['user_identity'],
         expires=decoded_token['expires'],
         revoked=decoded_token['revoked']
