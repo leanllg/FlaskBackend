@@ -12,28 +12,32 @@ mod = Blueprint('user', __name__, url_prefix='/api/user')
 
 @mod.route('/<name>', methods=['POST'])
 def signup(name):
-	if not request.json:
-		return jsonify({'status': 0}), 404
-    user_info = User.query.filter_by(name=name).first()
-    if user_info is not None:
-        return jsonify({'status': 0, 'error': 'user exists'})
-	password = request.json['password']
-	pwd = get_salt_pwd(password)
-    if not request.json.get('avatar', None):
-		avatar = '/home/default/default.jpg'
-	else:
-		avatar = request.json['avatar']
-    user = User(name=name, password=pwd, phone=request.json['phone'],\
-    qq=request.json['qq'], avatar=avatar, love_level=0)
-    user.save()
-    return jsonify({'status': 1}), 200
+    try:
+        if not request.json:
+            return jsonify({'status': 0}), 404
+        user_info = User.query.filter_by(name=name).first()
+        if user_info is not None:
+            return jsonify({'status': 0, 'error': 'user exists'})
+        password = request.json['password']
+        pwd = get_salt_pwd(password)
+        if not request.json.get('avatar', None):
+            avatar = '/home/default/default.jpg'
+        else:
+            avatar = request.json['avatar']
+        user = User(name=name, password=pwd, phone=request.json['phone'],\
+        qq=request.json['qq'], avatar=avatar, love_level=0)
+        user.save()
+        return jsonify({'status': 1}), 200
+    except:
+        print('parama error\n')
+        return jsonify({'status': 0, 'error': 'parama error'})
 
 @mod.route('/<name>', methods=['GET'])
 def login(name):
-	user_info = User.query.filter_by(name=name).first()
-	if not request.json:
-		return jsonify({'status': 0}), 404
-	username = request.json.get('name', None)
+    user_info = User.query.filter_by(name=name).first()
+    if not request.json:
+        return jsonify({'status': 0}), 404
+    username = request.json.get('name', None)
     password = request.json.get('password', None)
     if username != user_info['name'] or not bcrypt.checkpw(password, user_info['password']):
         return jsonify({'status': 0, 'error': 'username or password wrong'}), 404
@@ -53,7 +57,6 @@ def login(name):
 @jwt_refresh_token_required
 def logout():
     current_user = get_jwt_identity()
-    name = current_user['name']
     token = get_raw_jwt()
     try:
         revoke_token(token['jti'], current_user['name']);
@@ -94,8 +97,8 @@ def love_level():
     current_user = get_jwt_identity()
     user_info = User.query.filter_by(name=current_user['name']).one()
     if request.json:
-		if not request.json['love_level'] or request.json['love_level'] < 0:
-			return jsonify({'status': 0, 'error': 'love_level invalid'}), 402
+        if not request.json['love_level'] or request.json['love_level'] < 0:
+            return jsonify({'status': 0, 'error': 'love_level invalid'}), 402
         user_info.love_level = request.json['love_level']
         return jsonify({'status': 1}), 200
     return jsonify({'status': 0, 'error': 'not json'}), 404
