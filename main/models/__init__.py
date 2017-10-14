@@ -25,6 +25,14 @@ def add_token_to_database(encoded_token):
     )
     db_token.save()
 
+def is_token_revoked(decoded_token):
+    jti = decoded_token['jti']
+    try:
+        token = TokenBlacklist.query.filter_by(jti=jti).one()
+        return token.revoked
+    except NoResultFound:
+        return True
+
 def get_user_tokens(user_identity):
     return TokenBlacklist.query.filter_by(user_identity=user_identity).all()
 

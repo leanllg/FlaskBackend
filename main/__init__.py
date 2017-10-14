@@ -10,8 +10,7 @@ from main.views.location import location
 from main.views.token import token
 from main.views.user import mod
 
-from main.tokenerror import expired_token, invalid_token, revoked_token
-from main.models import db
+from main.models import db, is_token_revoked
 
 def create_app():
     db.init_app(app)
@@ -23,6 +22,12 @@ def create_app():
     @app.before_first_request
     def setup_sqlalchemy():
         db.create_all()
+
+    from main.tokenerror import expired_token, invalid_token, revoked_token
+
+    @jwt.token_in_blacklist_loader
+    def check_if_token_revoked(decoded_token):
+        return is_token_revoked(decoded_token)
 
     app.register_blueprint(case)
     app.register_blueprint(img)
